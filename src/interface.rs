@@ -5,11 +5,13 @@ mod logger;
 mod router;
 
 use std::io::stdin;
+use std::io::Write;
 pub struct Interface{
     running : bool,
     color_prefs : [String;3],
     logger : logger::Logger,
-    router : router::Router
+    router : router::Router,
+    
 }
 
 impl Interface{
@@ -26,9 +28,11 @@ impl Interface{
         self.logger.first_start_message();
         while self.running == true {
 
-
             let mut input : String = String::new();
-             stdin().read_line(&mut input);
+            print!(">");
+            std::io::stdout().flush().unwrap();
+            stdin().read_line(&mut input);
+            self.router.route_command(input);
         }
     }
 
