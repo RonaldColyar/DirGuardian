@@ -4,5 +4,5 @@ An abstraction that encrypts a selected directory on command with cloud function
 -Slowly thinking about the system design!
 -Cross Platform
 
-# Sample Cli
+# Sample Interface
 <img src="/ui.png">
