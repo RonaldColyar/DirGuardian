@@ -2,18 +2,23 @@
 use std::fs::File;
 use std::io::Read;
 
+#[path = "logger.rs"]
+mod logger;
 
 pub struct Router{
     successful_attempts :i8,
-    failed_attempts : i8
+    failed_attempts : i8,
+    pub logger : logger::Logger
 }
 
 impl Router{
     pub fn new(s:i8 , f:i8) -> Self{
         Self{
             successful_attempts : s,
-            failed_attempts : f
+            failed_attempts : f,
+            logger : logger::Logger::new(0),
         }
+        
     }
 
     fn check_param_count(&mut self ,status : &mut bool , command :&Vec<&str>){
@@ -32,6 +37,7 @@ impl Router{
                         };
                         //if there is an error
                         if let Err(_err) =result(){
+                            self.logger.file_not_found(command[1]);
                             *status = false;
                         };
                         

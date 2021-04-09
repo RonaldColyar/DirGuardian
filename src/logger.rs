@@ -21,7 +21,7 @@ impl  Logger {
         }  
     }
     fn display_row_number(&mut self){
-        println!("------------Row Number:{} ------------",
+        println!("------------Row Number:{}------------",
             self.row_number    
             );
         self.row_number +=1 ;
@@ -38,6 +38,12 @@ impl  Logger {
             Colour::Green.paint("Successfully") );
         self.display_bottom_sep();
         
+    }
+    pub fn file_not_found(&mut self ,path : &str){
+        self.display_row_number();
+        println!("Can't find file at {}" ,path);
+        println!("please try again!!");
+        self.display_bottom_sep();
     }
     fn welcome(&mut self){
         println!("   ");
