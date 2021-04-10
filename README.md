@@ -3,6 +3,6 @@ An abstraction that encrypts a selected directory on command with cloud function
 -This project is a work in progress!!
 -Slowly thinking about the system design!
 -Cross Platform
-
+-on/offline encryption
 # Sample Interface
 <img src="/ui.png">
