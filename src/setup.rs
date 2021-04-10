@@ -10,6 +10,9 @@ pub struct SetupObj{
 
 
 impl SetupObj {
+
+    
+
     pub fn new()-> Self{
         
         Self{
@@ -23,20 +26,20 @@ impl SetupObj {
                 "CodeToGainAccess.txt".to_string()]
         }
     }
+
+    pub fn create_new_config(&mut self , data : String) -> std::io::Result<bool>{
+        File::create("config_dir.txt")?.write_all(data.as_bytes())?;
+        Ok(true)
+    }
+
+
     pub fn create_new_bait_file(&mut self) -> std::io::Result<bool> {
-        if (true){
             //random file name
             let file_name = self.bait_file_names.choose(&mut rand::thread_rng()).unwrap();
             File::create(file_name)?.write_all(self.fake_content.as_bytes())?;
 
             Ok(true)
          
-
-        }
-        else{
-            Ok(true)
-
-        }
     }
 
     }

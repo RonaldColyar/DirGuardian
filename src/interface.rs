@@ -1,16 +1,20 @@
 
-#[path = "router.rs"]
-mod router;
-#[path = "setup.rs"]
-mod setup;
 
+
+use crate::router::Router;
+use crate::setup::SetupObj;
 use std::io::stdin;
 use std::io::Write;
+
+
+
+
+
 pub struct Interface{
     running : bool,
     color_prefs : [String;3],
-    pub router : router::Router,
-    setup_obj : setup::SetupObj
+    pub router : Router,
+    setup_obj : SetupObj
 }
 
 impl Interface{
@@ -18,8 +22,8 @@ impl Interface{
         Self{
             running :true,
             color_prefs : ["1".to_owned() , "2".to_owned(),"3".to_owned()],
-            router: router::Router::new(0,0),
-            setup_obj : setup::SetupObj::new()
+            router: Router::new(0,0),
+            setup_obj : SetupObj::new()
         }
     }
 
