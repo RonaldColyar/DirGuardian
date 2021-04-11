@@ -3,9 +3,9 @@
 use ansi_term::Colour;
 use std::fs::File;
 use std::io::Read;
-
-
 use std::env;
+
+
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
@@ -66,7 +66,7 @@ impl  Logger {
                
            }
            else{
-               println!("{}" , 
+               println!("{} {}" , 
             
               Colour::Red.paint("
                
@@ -74,7 +74,7 @@ impl  Logger {
               
               https://github.com/RonaldColyar/DirGuardian
               
-              ")
+              ") ,   f.unwrap_err()
             )
            }
        }
@@ -85,7 +85,16 @@ impl  Logger {
     
     pub fn first_start_message(&mut self){
         let mut data = String::new();
-        let mut f = File::open("/home/linux/DirGuardian/src/ascii.txt");
+        let path = 
+            env::current_dir()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned() + "/src/ascii.txt";
+            
+        println!("{}" , path);
+        let mut f = File::open( path);
+       
         self.welcome();
         self.file_read_check(f,&mut data);
     
