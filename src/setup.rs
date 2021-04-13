@@ -1,7 +1,11 @@
 
 use rand::seq::SliceRandom;
 use std::fs::File;
+use json;
 use std::io::prelude::*;
+use std::option;
+use std::env;
+
 pub struct SetupObj{
     pub ip : String,
     pub fake_content : String,
@@ -30,6 +34,27 @@ impl SetupObj {
     pub fn create_new_config(&mut self , data : String) -> std::io::Result<bool>{
         File::create("config_dir.txt")?.write_all(data.as_bytes())?;
         Ok(true)
+    }
+     fn try_to_access_config_data(&mut self)->
+            std::result::Result<std::fs::File , std::io::Error>{
+        let path = 
+        env::current_dir()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_owned() + "/src/config.json";
+        let mut f = File::open( path);
+        Ok(f.unwrap())
+    }
+    pub fn config_file(&mut self) -> Option<std::fs::File>{
+       let result =  self.try_to_access_config_data();
+       if result.is_ok(){
+           return Some(result.unwrap());
+
+       }
+       else{
+           None
+       }
     }
 
 

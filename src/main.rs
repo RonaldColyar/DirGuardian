@@ -1,6 +1,6 @@
 
 
-
+extern crate json;
 mod sockethandler;
 mod logger;
 mod interface;
@@ -20,7 +20,7 @@ fn main(){
     let mut ui = interface::Interface::new();
     print!("\x1B[2J\x1B[1;1H");  //clears console
 
-   
+    
     ui.router.logger.first_start_message();
     ui.start();
     

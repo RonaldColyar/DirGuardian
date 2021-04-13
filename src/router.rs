@@ -24,7 +24,7 @@ impl Router{
     }
 
     fn check_param_count(&mut self ,status : &mut bool , command :&Vec<&str>){
-            if   command.len() != 3  {
+            if   command.len() < 2   {
                 *status = false;
 
             }
@@ -59,6 +59,13 @@ impl Router{
         self.check_file(&mut status , command);
         return status;
     }
+
+    fn settings_config_routing(&mut self , data: Vec<&str> ){
+        if data.len() == 3{
+            
+
+        }
+    }
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
 
 
@@ -67,6 +74,9 @@ impl Router{
         }
         else if command_vec[0] == "encrypt" && command_vec[2] == "on"{
             //route to online encryption
+        }
+        else if command_vec[0] == "config" && command_vec[1] == "settings"{
+        
         }
     }
     pub fn route_command(&mut self, input:String){
