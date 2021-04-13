@@ -1,7 +1,7 @@
 
 use std::fs::File;
 use std::io::Read;
-
+use crate::setup::SetupObj;
 use crate::logger::Logger;
 use crate::sockethandler::SockHandler;
 
@@ -9,7 +9,8 @@ pub struct Router{
     successful_attempts :i8,
     failed_attempts : i8,
     pub logger : Logger,
-    socket_handler : SockHandler
+    socket_handler : SockHandler,
+    setup_obj : SetupObj
 }
 
 impl Router{
@@ -18,7 +19,8 @@ impl Router{
             successful_attempts : s,
             failed_attempts : f,
             logger : Logger::new(0),
-            socket_handler : SockHandler::new()
+            socket_handler : SockHandler::new(),
+            setup_obj : SetupObj::new()
         }
         
     }
@@ -60,10 +62,23 @@ impl Router{
         return status;
     }
 
+    
+
     fn settings_config_routing(&mut self , data: Vec<&str> ){
         if data.len() == 3{
-            
+            if data[2] == "color"{
 
+            }
+            else if data[2] == "ip"{
+
+            }
+            else if data[2] == "displayname"{
+
+            }
+
+        }
+        else{
+            self.logger.unknown_command();
         }
     }
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){

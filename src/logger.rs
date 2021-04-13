@@ -20,6 +20,14 @@ impl  Logger {
             row_number : init_num
         }  
     }
+
+
+    pub fn unknown_command(&mut self){
+        self.display_row_number();
+        println!("Unknown Command!! ")
+        self.display_bottom_sep();
+    }
+
     fn display_row_number(&mut self){
         println!("------------Row Number:{}------------",
             self.row_number    

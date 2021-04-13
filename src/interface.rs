@@ -2,7 +2,6 @@
 
 
 use crate::router::Router;
-use crate::setup::SetupObj;
 use std::io::stdin;
 use std::io::Write;
 
@@ -22,8 +21,7 @@ impl Interface{
         Self{
             running :true,
             color_prefs : ["1".to_owned() , "2".to_owned(),"3".to_owned()],
-            router: Router::new(0,0),
-            setup_obj : SetupObj::new()
+            router: Router::new(0,0)
         }
     }
 
