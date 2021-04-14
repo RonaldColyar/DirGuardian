@@ -23,7 +23,7 @@ impl JsonHandler{
         if result.is_ok(){
             let data = result.unwrap();
             data[type_of_config]  = value;
-            return data;
+            return data.dump();
         }
         else{
             return "issue".to_owned();

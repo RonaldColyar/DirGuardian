@@ -4,7 +4,10 @@ use std::io::Read;
 use crate::setup::SetupObj;
 use crate::logger::Logger;
 use crate::sockethandler::SockHandler;
+use std::io::Write;
 
+
+use std::io::stdin;
 pub struct Router{
     successful_attempts :i8,
     failed_attempts : i8,
@@ -31,7 +34,7 @@ impl Router{
 
             }
     }
-    fn check_file(&mut self, status : &mut bool , command :Vec<&str>){
+    fn check_file(&mut self, status : &mut bool , command :&Vec<&str>){
                     if *status != false{
                         let path = command[1];
                         let result = || ->std::result::Result<() , std::io::Error>{
@@ -55,52 +58,74 @@ impl Router{
             return false;
         }
     }
-    fn command_is_valid(&mut self , command : Vec<&str>)-> bool{
+
+    fn command_is_valid(&mut self , command : &Vec<&str>)-> bool{
         let mut status = true;
         self.check_param_count(&mut status , &command);
-        self.check_file(&mut status , command);
+        //only check file path if leading command is encrypt
+        if status == true {
+            if command[0] == "encrypt"{
+                self.check_file(&mut status , command);
+            }
+        }
         return status;
     }
-
     
+    fn new_input(&mut self,prompt : &str) -> String{
+        print!("{}", prompt);
+        std::io::stdout().flush().unwrap();
+        let mut input = String::new();
+        stdin().read_line(&mut input);
+        return input;
+    }
+
+
+    fn check_type_of_change(&mut self , data :Vec<&str>){
+        println!("{}" , data[2] );
+        if data[2] == "color"{
+            let result = self.new_input("What Color would you like?>");
+            println!("{}" , result);
+        }
+        else if data[2] == "ip"{
+
+        }
+        else if data[2] == "displayname"{
+
+        }
+    }
 
     fn settings_config_routing(&mut self , data: Vec<&str> ){
         if data.len() == 3{
-            if data[2] == "color"{
-
-            }
-            else if data[2] == "ip"{
-
-            }
-            else if data[2] == "displayname"{
-
+            self.check_type_of_change(data);
             }
 
-        }
+        
         else{
             self.logger.unknown_command();
         }
     }
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
-
-
+        println!("{}" , command_vec[0] == "config" && command_vec[1] == "settings");
+        
         if command_vec[0] == "encrypt" && command_vec[2] == "off"{
             //route to offline encryption
         }
         else if command_vec[0] == "encrypt" && command_vec[2] == "on"{
             //route to online encryption
         }
-        else if command_vec[0] == "config" && command_vec[1] == "settings"{
-        
+        else if command_vec[0] == "config"  && command_vec[1] == "settings"{
+            self.settings_config_routing(command_vec);
+          
         }
+        
     }
     pub fn route_command(&mut self, input:String){
        let  command_vec =  input.as_str().split(" ").collect();
-       if self.command_is_valid(command_vec) == true {
-
+       if self.command_is_valid(&command_vec) == true {
+           self.route_command_tier_one(command_vec);
        }
        else{
-           
+           self.logger.unknown_command();
        }
 
     }

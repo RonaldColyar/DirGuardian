@@ -13,7 +13,7 @@ pub struct Interface{
     running : bool,
     color_prefs : [String;3],
     pub router : Router,
-    setup_obj : SetupObj
+
 }
 
 impl Interface{
@@ -21,7 +21,8 @@ impl Interface{
         Self{
             running :true,
             color_prefs : ["1".to_owned() , "2".to_owned(),"3".to_owned()],
-            router: Router::new(0,0)
+            router: Router::new(0,0),
+
         }
     }
 
@@ -29,7 +30,7 @@ impl Interface{
         while self.running == true {
 
             let mut input : String = String::new();
-            print!(">");
+            
             std::io::stdout().flush().unwrap();
             stdin().read_line(&mut input);
             self.router.route_command(input);

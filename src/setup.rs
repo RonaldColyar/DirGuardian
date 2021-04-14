@@ -42,7 +42,7 @@ impl SetupObj {
         .to_str()
         .unwrap()
         .to_owned() + "/src/config.json";
-        let mut f = File::open( path);
+        let f = File::open( path);
         Ok(f.unwrap())
     }
     pub fn config_file(&mut self) -> Option<std::fs::File>{
