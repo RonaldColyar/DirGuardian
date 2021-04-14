@@ -12,7 +12,7 @@ An abstraction that protects  a selected directory with cloud functionality.
 - Real-time notifications on dir statuses
 
 
-#Is there  only command line access???
+# Is there  only command line access???
 
 There is a matching web and android version to monitor the dir status and control the server's state. 
 
