@@ -12,7 +12,7 @@ pub struct SetupObj{
     pub bait_file_names : [String ; 5],
 }
 
-
+//todo: finish color setup
 impl SetupObj {
 
     
@@ -32,9 +32,20 @@ impl SetupObj {
         }
     }
 
-    pub fn create_new_config(&mut self , data : String) -> std::io::Result<bool>{
-        File::create("config_dir.txt")?.write_all(data.as_bytes())?;
-        Ok(true)
+    pub fn create_new_config(&mut self , data : String) -> bool{
+        let create_result= File::create("config.json");
+        if create_result.is_ok(){
+            let write_result = create_result .unwrap().write_all(data.as_bytes()); 
+            if write_result.is_ok(){ //successfully wrote to file
+                return true;
+            }
+            return false; // issue
+        }
+        else{
+            return false; //issue with data
+        }
+        
+        
     }
      fn try_to_access_config_data(&mut self)->
             std::result::Result<std::fs::File , std::io::Error>{
@@ -48,7 +59,6 @@ impl SetupObj {
         Ok(f.unwrap())
     }
 
-  
     pub fn color_preference(&mut self)-> String{
         let file = self.config_file();
   

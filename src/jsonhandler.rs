@@ -19,8 +19,6 @@ impl JsonHandler{
     } 
     pub fn new_json_obj(data:String)-> std::result::Result<json::JsonValue , std::io::Error>{
         let result = json::parse(data.as_str());
-       
-            
             Ok(result.unwrap())
             
         }

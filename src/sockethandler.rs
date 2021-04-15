@@ -23,5 +23,8 @@ impl SockHandler{
     pub fn init_connection(){
 
     }
+    pub fn send_request(){
+        
+    }
 
 }

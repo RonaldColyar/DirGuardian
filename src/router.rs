@@ -15,7 +15,6 @@ pub struct Router{
     successful_attempts :i8,
     failed_attempts : i8,
     pub logger : Logger,
-    socket_handler : SockHandler,
     setup_obj : SetupObj,
 
 }
@@ -26,16 +25,13 @@ impl Router{
             successful_attempts : s,
             failed_attempts : f,
             logger : Logger::new(0),
-            socket_handler : SockHandler::new(),
             setup_obj : SetupObj::new(),
 
         }
         
     }
 
-    fn route_color_preference(data:String){
-   
-    }
+    //fn route_color_preference(data:String){}
     fn check_param_count(&mut self ,status : &mut bool , command :&Vec<&str>){
             if   command.len() < 2   {
                 *status = false;
@@ -110,9 +106,17 @@ impl Router{
             self.logger.unknown_command();
         }
     }
+    fn encrypt_online(&mut self data:Vec<&str>){
+
+    }
+
+    fn encrypt_offline(){
+
+
+    }
+
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
-        println!("{}" , command_vec[0] == "config" && command_vec[1] == "settings");
-        
+
         if command_vec[0] == "encrypt" && command_vec[2] == "off"{
             //route to offline encryption
         }
@@ -125,9 +129,19 @@ impl Router{
         }
         
     }
+    //for tests
+    //fn test_config_file(&mut self){
+      //  let data = "{color:red}".to_string();
+        //let create_result = self.setup_obj.create_new_config(data);
+        //if create_result ==  true {
+           // println!("setup");
+        //}
+    //}
+    
     pub fn route_command(&mut self, input:&str){
        let  command_vec =  input.split(" ").collect();
        if self.command_is_valid(&command_vec) == true {
+           self.init_config_file();
            self.route_command_tier_one(command_vec);
        }
        else{
