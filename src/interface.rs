@@ -33,7 +33,7 @@ impl Interface{
             
             std::io::stdout().flush().unwrap();
             stdin().read_line(&mut input);
-            self.router.route_command(input);
+            self.router.route_command(input.trim());
         }
     }
 

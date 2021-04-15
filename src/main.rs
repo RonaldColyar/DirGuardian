@@ -7,7 +7,7 @@ mod interface;
 mod router;
 mod setup;
 mod encryptor;
-
+mod jsonhandler;
 
 
 use rand::seq::SliceRandom;

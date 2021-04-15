@@ -1,7 +1,8 @@
-use json;
+
 use json;
 
-struct JsonHandler{
+use std::io::prelude::*;
+pub struct JsonHandler{
     file : std::fs::File,
     counter: i8
 }
@@ -16,13 +17,25 @@ impl JsonHandler{
         }
 
     } 
-    pub fn new_json_string(type_of_config : String , value :String)-> String{
+    pub fn new_json_obj(data:String)-> std::result::Result<json::JsonValue , std::io::Error>{
+        let result = json::parse(data.as_str());
+       
+            
+            Ok(result.unwrap())
+            
+        }
+        
+        
+        
+    
+    pub fn new_json_string(&mut self ,type_of_config : String , value :String)-> String{
 
-
-        let result = json::parse(file.read_to_string());
+        let mut content_string = String::new();
+        self.file.read_to_string(&mut content_string);
+        let result = json::parse(&content_string.as_str());
         if result.is_ok(){
-            let data = result.unwrap();
-            data[type_of_config]  = value;
+            let mut data = result.unwrap();
+            data[type_of_config]  = value.as_str().into();
             return data.dump();
         }
         else{

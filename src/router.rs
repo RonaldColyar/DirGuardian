@@ -7,13 +7,17 @@ use crate::sockethandler::SockHandler;
 use std::io::Write;
 
 
+
+
+
 use std::io::stdin;
 pub struct Router{
     successful_attempts :i8,
     failed_attempts : i8,
     pub logger : Logger,
     socket_handler : SockHandler,
-    setup_obj : SetupObj
+    setup_obj : SetupObj,
+
 }
 
 impl Router{
@@ -23,11 +27,15 @@ impl Router{
             failed_attempts : f,
             logger : Logger::new(0),
             socket_handler : SockHandler::new(),
-            setup_obj : SetupObj::new()
+            setup_obj : SetupObj::new(),
+
         }
         
     }
 
+    fn route_color_preference(data:String){
+   
+    }
     fn check_param_count(&mut self ,status : &mut bool , command :&Vec<&str>){
             if   command.len() < 2   {
                 *status = false;
@@ -81,21 +89,19 @@ impl Router{
 
 
     fn check_type_of_change(&mut self , data :Vec<&str>){
-        println!("{}" , data[2] );
         if data[2] == "color"{
-            let result = self.new_input("What Color would you like?>");
-            println!("{}" , result);
+            let result = self.new_input("Color?>");
         }
         else if data[2] == "ip"{
-
+            let result = self.new_input("Ip?>");
         }
         else if data[2] == "displayname"{
-
+            let result = self.new_input("DisplayName>?");
         }
     }
 
     fn settings_config_routing(&mut self , data: Vec<&str> ){
-        if data.len() == 3{
+        if data.len() == 3 {
             self.check_type_of_change(data);
             }
 
@@ -119,8 +125,8 @@ impl Router{
         }
         
     }
-    pub fn route_command(&mut self, input:String){
-       let  command_vec =  input.as_str().split(" ").collect();
+    pub fn route_command(&mut self, input:&str){
+       let  command_vec =  input.split(" ").collect();
        if self.command_is_valid(&command_vec) == true {
            self.route_command_tier_one(command_vec);
        }
