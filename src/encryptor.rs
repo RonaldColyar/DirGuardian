@@ -13,13 +13,13 @@ impl encryptor{
     return new_name;
 }
  fn find_extension( 
-        file_extension : &mut Queue<char>,
+        file_extension : &mut Vec<char>,
         old_name : &str ,status:&mut bool){
 
     let dot :char = ".".chars().next().unwrap();
-    //reverse iteration add into the queue
+    //reverse iteration add onto the stack
     for letter in old_name.chars().rev(){
-        file_extension.add(letter);
+        file_extension.push(letter);
         if letter == dot {
             *status = true;
             break;
@@ -27,19 +27,19 @@ impl encryptor{
     }
 
  }
- fn file_name_with_suffix_and_ext(old_name:&str , file_extension:  &mut Queue<char>)->String{
+ fn file_name_with_suffix_and_ext(old_name:&str , file_extension:  &mut Vec<char>)->String{
     let mut new_name:String  = old_name
             .chars() 
-            .take(old_name.len() - file_extension.size())
+            .take(old_name.len() - file_extension.len())
             .collect(); //name without the extension
     new_name = new_name + "Protected"; //suffix
-    for n in 1..file_extension.size(){
-        new_name.push(file_extension.remove().unwrap());
+    for n in 0..file_extension.len(){
+        new_name.push(file_extension.pop().unwrap());
     }
     return new_name;
  }
- fn encrypted_file_name(old_name: &str) -> String{
-    let mut file_extension : Queue<char>  = queue![];
+ pub fn encrypted_file_name(old_name: &str) -> String{
+    let mut file_extension : Vec<char> = vec![];
     let mut status = false;
     encryptor::find_extension(
         &mut file_extension,
