@@ -18,11 +18,12 @@ impl encryptor{
         file_extension : &mut Queue<char>,
         old_name : &str ){
     let dot :char = ".".chars().next().unwrap();
+    let slash : char = "/".chars().next.unwrap();
     //reverse iteration add into the queue
     for letter in old_name.chars().rev(){
         file_extension.add(letter);
         *counter = *counter +1;
-        if letter == dot{
+        if letter == dot || letter == slash{
             break;
         }
     }
