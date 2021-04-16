@@ -12,41 +12,46 @@ impl encryptor{
     let new_name: String = old_name.chars().take(len-9).collect();
     return new_name;
 }
- fn find_extension(
-        
-        counter :&mut i8  , 
+ fn find_extension( 
         file_extension : &mut Queue<char>,
-        old_name : &str ){
+        old_name : &str ,status:&mut bool){
+
     let dot :char = ".".chars().next().unwrap();
-    let slash : char = "/".chars().next.unwrap();
     //reverse iteration add into the queue
     for letter in old_name.chars().rev(){
         file_extension.add(letter);
-        *counter = *counter +1;
-        if letter == dot || letter == slash{
+        if letter == dot {
+            *status = true;
             break;
         }
     }
 
  }
- fn add_extension_to_file(new_name:&mut String , file_extension: &mut Queue<char>){
-     //push extension on new file name
+ fn file_with_updated_suffix(old_name:&str , file_extension: &mut Queue<char>)->String{
+    let mut new_name:String  = old_name
+            .chars() 
+            .take(old_name.len() - file_extension.size())
+            .collect(); //name without the extension
+    new_name = new_name + "Protected"; //suffix
     for n in 1..file_extension.size(){
         new_name.push(file_extension.remove().unwrap());
     }
+    return new_name;
  }
  fn encrypted_file_name(old_name: &str) -> String{
     let mut file_extension : Queue<char>  = queue![];
-    let mut counter : i8 = 0; // num of characters untill extension was found
-    encryptor::find_extension(&mut counter,&mut file_extension,old_name);
-    
-    let mut new_name:String  = old_name.chars() 
-        .take(old_name.len() - file_extension.size())
-        .collect(); //name without the extension
-    new_name = new_name + "Protected"; 
-
-    encryptor::add_extension_to_file(&mut new_name , &mut file_extension);
-    return new_name;
+    let mut status = false;
+    encryptor::find_extension(
+        &mut file_extension,
+        old_name,
+        &mut status);
+    if status == false{
+        return String::new();
+    }
+    else{
+        return encryptor::file_with_updated_suffix(old_name,&mut file_extension );
+    }
+   
     }
 
 
