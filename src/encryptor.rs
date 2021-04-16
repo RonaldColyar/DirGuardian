@@ -27,7 +27,7 @@ impl encryptor{
     }
 
  }
- fn file_with_updated_suffix(old_name:&str , file_extension: &mut Queue<char>)->String{
+ fn file_name_with_suffix_and_ext(old_name:&str , file_extension:  &mut Queue<char>)->String{
     let mut new_name:String  = old_name
             .chars() 
             .take(old_name.len() - file_extension.size())
@@ -46,10 +46,10 @@ impl encryptor{
         old_name,
         &mut status);
     if status == false{
-        return String::new();
+        return old_name.to_owned() + "Protected";
     }
     else{
-        return encryptor::file_with_updated_suffix(old_name,&mut file_extension );
+        return encryptor::file_name_with_suffix_and_ext(old_name,&mut file_extension );
     }
    
     }
