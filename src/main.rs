@@ -8,10 +8,13 @@ mod router;
 mod setup;
 mod encryptor;
 mod jsonhandler;
-
+use std::env;
 
 use rand::seq::SliceRandom;
+#[macro_use]
+extern crate queues;
 
+use queues::*;
 
 
 fn main(){
@@ -24,21 +27,22 @@ fn main(){
     .unwrap()
     .to_str()
     .unwrap()
-    .to_owned() + "/src/test.txt";
+    .to_owned() + "/src/test1.txt";
     let path2 = 
     env::current_dir()
     .unwrap()
     .to_str()
     .unwrap()
-    .to_owned() + "/src/test1.txt";
-
+    .to_owned() + "/src/test2.txt";
+ 
+    let result = encryptor::encryptor::decrypt("iloveyou" ,&path2 ,&path  );
+    if result.is_ok(){
+        println!("works well");
+    }
     
     ui.router.logger.first_start_message();
     ui.start();
-    
-    let result = encryptor::encrypt("iloveyou" ,path2 ,path );
-    if result.is_ok(){
-        println("works well");
-    }
+   
+
     
 }
