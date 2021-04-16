@@ -1,5 +1,5 @@
 
-
+extern crate encryptfile;
 extern crate json;
 mod sockethandler;
 mod logger;

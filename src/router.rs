@@ -52,16 +52,7 @@ impl Router{
                     }    
                 }
 
-    fn init_socket_connection(&mut self) -> bool{
-        let result = self.socket_handler.connect();
 
-        if result.is_ok(){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
     fn command_is_valid(&mut self , command : &Vec<&str>)-> bool{
         let mut status = true;
@@ -106,11 +97,11 @@ impl Router{
             self.logger.unknown_command();
         }
     }
-    fn encrypt_online(&mut self data:Vec<&str>){
+    fn encrypt_online(&mut self, data:Vec<&str>){
 
     }
 
-    fn encrypt_offline(){
+    fn encrypt_offline(&mut self ,data:Vec<&str>){
 
 
     }
@@ -139,9 +130,9 @@ impl Router{
     //}
     
     pub fn route_command(&mut self, input:&str){
+        // split commands into format: [param1,param2,param3]
        let  command_vec =  input.split(" ").collect();
        if self.command_is_valid(&command_vec) == true {
-           self.init_config_file();
            self.route_command_tier_one(command_vec);
        }
        else{

@@ -25,7 +25,9 @@ impl JsonHandler{
         
         
         
-    
+    //takes old json(in file)
+    //add changed value 
+    //returns stringified version 
     pub fn new_json_string(&mut self ,type_of_config : String , value :String)-> String{
 
         let mut content_string = String::new();
