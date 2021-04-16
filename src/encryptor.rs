@@ -19,7 +19,6 @@ impl encryptor{
         old_name : &str ){
     let dot :char = ".".chars().next().unwrap();
     //reverse iteration add into the queue
-    //untill dot is found
     for letter in old_name.chars().rev(){
         file_extension.add(letter);
         *counter = *counter +1;
@@ -29,7 +28,7 @@ impl encryptor{
     }
 
  }
- fn add_extension(new_name:&mut String , file_extension: &mut Queue<char>){
+ fn add_extension_to_file(new_name:&mut String , file_extension: &mut Queue<char>){
      //push extension on new file name
     for n in 1..file_extension.size(){
         new_name.push(file_extension.remove().unwrap());
@@ -37,13 +36,15 @@ impl encryptor{
  }
  fn encrypted_file_name(old_name: &str) -> String{
     let mut file_extension : Queue<char>  = queue![];
-    let mut counter : i8 = 0;
+    let mut counter : i8 = 0; // num of characters untill extension was found
     encryptor::find_extension(&mut counter,&mut file_extension,old_name);
-    let mut new_name:String  = old_name.chars()
+    
+    let mut new_name:String  = old_name.chars() 
         .take(old_name.len() - file_extension.size())
-        .collect();
-    new_name = new_name + "Protected";
-    encryptor::add_extension(&mut new_name , &mut file_extension);
+        .collect(); //name without the extension
+    new_name = new_name + "Protected"; 
+
+    encryptor::add_extension_to_file(&mut new_name , &mut file_extension);
     return new_name;
     }
 
