@@ -54,7 +54,7 @@ impl encryptor{
     }
    
     }
-
+//future use
  fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
      //if original encrypted try deleting the original
      if encrypt_result.is_ok(){
