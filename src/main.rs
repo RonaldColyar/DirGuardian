@@ -23,7 +23,7 @@ fn main(){
     let mut ui = interface::Interface::new();
   
     ui.router.logger.first_start_message();
-    println!("{}" , encryptor::encryptor::encrypted_file_name("test.txf"));
+    println!("{}" , encryptor::encryptor::decrypted_file_name("testprotected"));
     ui.start();
    
 

@@ -21,7 +21,7 @@ impl  Logger {
         }  
     }
 
-
+    
     pub fn unknown_command(&mut self){
         self.display_row_number();
         println!("Unknown Command!! ");

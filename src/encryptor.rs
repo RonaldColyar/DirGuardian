@@ -2,16 +2,10 @@
 use queues::*;
 use crate::encryptfile as ef;
 pub struct encryptor;
+use std::fs;
 
 impl encryptor{
 
- fn decrypted_file_name(old_name : &str) -> String{
-    //-9 because our file gets "protected" added
-    //when encrypted
-    let len = old_name.len();
-    let new_name: String = old_name.chars().take(len-9).collect();
-    return new_name;
-}
  fn find_extension( 
         file_extension : &mut Vec<char>,
         old_name : &str ,status:&mut bool){
@@ -27,17 +21,24 @@ impl encryptor{
     }
 
  }
- fn file_name_with_suffix_and_ext(old_name:&str , file_extension:  &mut Vec<char>)->String{
+ 
+ fn file_name_with_suffix_and_ext(
+     old_name:&str , 
+     file_extension:  &mut Vec<char>,
+     suffix :&str)->String{
     let mut new_name:String  = old_name
             .chars() 
             .take(old_name.len() - file_extension.len())
             .collect(); //name without the extension
-    new_name = new_name + "Protected"; //suffix
+    new_name = new_name +  suffix;
+    //add extension back on after adding suffix
     for n in 0..file_extension.len(){
+        println!("{}",file_extension.len());
         new_name.push(file_extension.pop().unwrap());
     }
     return new_name;
  }
+
  pub fn encrypted_file_name(old_name: &str) -> String{
     let mut file_extension : Vec<char> = vec![];
     let mut status = false;
@@ -49,12 +50,21 @@ impl encryptor{
         return old_name.to_owned() + "Protected";
     }
     else{
-        return encryptor::file_name_with_suffix_and_ext(old_name,&mut file_extension );
+        return encryptor::file_name_with_suffix_and_ext(old_name,&mut file_extension,"Protected" );
     }
    
     }
 
+ fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
+     //if original encrypted try deleting the original
+     if encrypt_result.is_ok(){
+         let delete_result = fs::remove_file(path);
+         if delete_result.is_ok(){
+            println!("File at {} has been successfully encrypted and deleted",path);
+         }
+     }
 
+ }
  pub fn encrypt(key:&str , output_pathing : &str , input_pathing:&str)-> Result<() , ef::EncryptError>{   
 
     let mut encrypt_config = ef::Config::new();
