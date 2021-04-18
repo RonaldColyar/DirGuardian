@@ -38,25 +38,37 @@ fn encrypt_or_add_dirname(path:std::path::PathBuf
         dir_names.push(name);
     }
     else{ // found a file
-        let name_result = path.file_name();
-        if name_result.is_some(){
-            println!(" Encrypting->{}",name_result.unwrap().to_str().unwrap());
-            let file_name = name_result.unwrap();
-            let encrypted_file_name = 
-                encryptor::plain_encrypted_file_name(file_name.to_str().unwrap());
-            let output_file_path = 
-                String::from(dir_names[curr_index].to_owned()) + encrypted_file_name.as_str();
-            encryptor::encrypt("ok" , output_file_path.as_str(), path.to_str().unwrap());
+       encryptor::check_path_and_encrypt(dir_names[curr_index].as_str(),path);
+        }
+    }
+
+fn check_path_and_encrypt(output_location :&str , path:std::path::PathBuf){
+    let name_result = path.file_name();
+    if name_result.is_some(){
+        println!(" Encrypting->{}",name_result.unwrap().to_str().unwrap());
+        let file_name = name_result.unwrap();
+        let encrypted_file_name = 
+            encryptor::plain_encrypted_file_name(file_name.to_str().unwrap());
+        let output_file_path = 
+            String::from(output_location.to_owned()) + encrypted_file_name.as_str();
+        encryptor::encrypt("ok" , output_file_path.as_str(), path.to_str().unwrap());
+    }
+}
+pub fn encrypt_dir(dir_path:&str){
+    let entries_result = fs::read_dir(dir_path);
+    if entries_result.is_ok(){
+        
+        for entry in entries_result.unwrap(){
+            encryptor::check_path_and_encrypt(dir_path,entry.unwrap().path());
         }
     }
 }
-
 pub fn encrypt_dir_and_sub_dirs(dir_path:&str){
-    let mut  not_found_status = false;
+    let mut  not_found_status = false; 
     let mut directory_names = vec![String::from(dir_path)];
     let mut current_index :usize= 0;
 
-    while not_found_status == false{
+    while not_found_status == false{ //while there are sub directories remaining
         let dir_name_size = directory_names.len();
         let entries_result = fs::read_dir(directory_names[current_index].to_owned());
         if entries_result.is_ok(){
