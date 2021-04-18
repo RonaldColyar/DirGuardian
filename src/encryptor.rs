@@ -5,6 +5,8 @@ pub struct encryptor;
 use crate::uuid;
 use std::fs;
 
+use std::env;
+
 impl encryptor{
 
 fn find_extension( 
@@ -23,6 +25,56 @@ fn find_extension(
      *file_extension = vec![];
 
  }
+
+fn get_all_filenames(){
+
+
+}
+fn encrypt_or_add_dirname(path:std::path::PathBuf 
+        ,dir_names :&mut Vec<String>,dir_path :&str,curr_index:usize) {
+    if path.is_dir() { //found a sub directory
+        println!("{}", path.to_str().unwrap().to_owned() +"/");
+        let name = String::from(path.to_str().unwrap())+ "/";
+        dir_names.push(name);
+    }
+    else{ // found a file
+        let name_result = path.file_name();
+        if name_result.is_some(){
+            println!(" Encrypting->{}",name_result.unwrap().to_str().unwrap());
+            let file_name = name_result.unwrap();
+            let encrypted_file_name = 
+                encryptor::plain_encrypted_file_name(file_name.to_str().unwrap());
+            let output_file_path = 
+                String::from(dir_names[curr_index].to_owned()) + encrypted_file_name.as_str();
+            encryptor::encrypt("ok" , output_file_path.as_str(), path.to_str().unwrap());
+        }
+    }
+}
+
+pub fn encrypt_dir_and_sub_dirs(dir_path:&str){
+    let mut  not_found_status = false;
+    let mut directory_names = vec![String::from(dir_path)];
+    let mut current_index :usize= 0;
+
+    while not_found_status == false{
+        let dir_name_size = directory_names.len();
+        let entries_result = fs::read_dir(directory_names[current_index].to_owned());
+        if entries_result.is_ok(){
+            for entry in entries_result.unwrap(){
+                encryptor::encrypt_or_add_dirname(entry.unwrap().path() ,
+                    &mut directory_names,dir_path,current_index);
+            }
+            if dir_name_size == directory_names.len(){// there isn't any more sub directories
+                not_found_status = true;
+            }
+        }
+        else{
+            break; //no initial directory found
+        }
+        current_index = current_index +1;}
+}
+
+
 
 fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
     //if original encrypted try deleting the original
@@ -80,12 +132,12 @@ fn gather_correct_decrypt_name_with_ext(
     return name_holder;
  }
 
-
  fn add_extension(file_ext: &mut Vec<char> , new_name:&mut String){
     for n in 0..file_ext.len(){
         new_name.push(file_ext.pop().unwrap());
     }
  }
+
  fn file_name_with_suffix_and_ext(
      old_name:&str , 
      mut file_ext:  &mut Vec<char>,
@@ -103,9 +155,8 @@ fn gather_correct_decrypt_name_with_ext(
     let mut file_ext : Vec<char> = vec![];
     encryptor::find_extension(&mut file_ext,old_name);
     return encryptor::file_name_without_suffix(old_name,&mut file_ext);
-    
-
  } 
+
  pub fn plain_encrypted_file_name(old_name: &str) -> String{
     let mut file_extension : Vec<char> = vec![];
     encryptor::find_extension(
@@ -117,10 +168,8 @@ fn gather_correct_decrypt_name_with_ext(
     else{
         return encryptor::file_name_with_suffix_and_ext(old_name,&mut file_extension,"Protected" );
     }
-   
     }
 
- 
  pub fn encrypt(key:&str , output_pathing : &str , input_pathing:&str)-> Result<() , ef::EncryptError>{   
     let mut encrypt_config = ef::Config::new();
     encrypt_config.input_stream(ef::InputStream::File(input_pathing.to_owned()))
