@@ -2,51 +2,117 @@
 use queues::*;
 use crate::encryptfile as ef;
 pub struct encryptor;
+use crate::uuid;
 use std::fs;
 
 impl encryptor{
 
- fn find_extension( 
+fn find_extension( 
         file_extension : &mut Vec<char>,
-        old_name : &str ,status:&mut bool){
+        old_name : &str ){
 
     let dot :char = ".".chars().next().unwrap();
     //reverse iteration add onto the stack
     for letter in old_name.chars().rev(){
         file_extension.push(letter);
         if letter == dot {
-            *status = true;
-            break;
+            return;
         }
+
     }
+     // if no dot has been found
+     *file_extension = vec![];
 
  }
- 
+fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
+    //if original encrypted try deleting the original
+    if encrypt_result.is_ok(){
+        let delete_result = fs::remove_file(path);
+        if delete_result.is_ok(){
+           println!("File at {} has been successfully encrypted and deleted",path);
+        }
+    }
+}
+
+
+fn gather_correct_decrypt_name_without_ext(
+    old_name:&str ,
+    name_holder:&mut String){
+           
+    if old_name.len() > 9{
+        let name_without_ext_and_suffix :String = 
+            old_name.chars().take(old_name.len()-9).collect();
+        *name_holder =  name_without_ext_and_suffix;
+    }
+    //no suffix
+    else{
+        *name_holder =old_name.to_string();
+    }
+}
+fn gather_correct_decrypt_name_with_ext(
+        old_name:&str ,
+        mut file_ext:&mut Vec<char>,
+        name_holder:&mut String ){
+
+    let name_without_ext:String = old_name.chars().take(old_name.len()-file_ext.len()).collect();
+    //extension but no suffix
+    if name_without_ext.len() <=9{
+        *name_holder = old_name.to_string();
+    }
+    //extension and suffix
+    else{
+        let mut  name_without_ext_and_suffix:String =
+            name_without_ext.chars().take(name_without_ext.len() - 9).collect();
+        encryptor::add_extension(&mut file_ext , &mut name_without_ext_and_suffix);
+        *name_holder =  name_without_ext_and_suffix;//now has extension
+    }
+}
+
+ pub fn file_name_without_suffix(old_name:&str , mut file_ext:&mut Vec<char>) -> String{
+    let mut name_holder :String = String::new();
+    if file_ext.len() > 0 {
+        encryptor::gather_correct_decrypt_name_with_ext(old_name , &mut file_ext , &mut name_holder);
+    }
+    //no extension
+    else{
+        encryptor::gather_correct_decrypt_name_without_ext(old_name,&mut name_holder);
+    }
+   
+    return name_holder;
+ }
+
+
+ fn add_extension(file_ext: &mut Vec<char> , new_name:&mut String){
+    for n in 0..file_ext.len(){
+        new_name.push(file_ext.pop().unwrap());
+    }
+ }
  fn file_name_with_suffix_and_ext(
      old_name:&str , 
-     file_extension:  &mut Vec<char>,
+     mut file_ext:  &mut Vec<char>,
      suffix :&str)->String{
     let mut new_name:String  = old_name
             .chars() 
-            .take(old_name.len() - file_extension.len())
+            .take(old_name.len() - file_ext.len())
             .collect(); //name without the extension
     new_name = new_name +  suffix;
-    //add extension back on after adding suffix
-    for n in 0..file_extension.len(){
-        println!("{}",file_extension.len());
-        new_name.push(file_extension.pop().unwrap());
-    }
+    encryptor::add_extension(&mut file_ext,&mut new_name);
     return new_name;
  }
+ //removes "protected" suffix from plain file name
+ fn plain_decrypted_file_name(old_name:&str) -> String{
+    let mut file_ext : Vec<char> = vec![];
+    encryptor::find_extension(&mut file_ext,old_name);
+    return encryptor::file_name_without_suffix(old_name,&mut file_ext);
+    
 
- pub fn encrypted_file_name(old_name: &str) -> String{
+ } 
+ pub fn plain_encrypted_file_name(old_name: &str) -> String{
     let mut file_extension : Vec<char> = vec![];
-    let mut status = false;
     encryptor::find_extension(
         &mut file_extension,
-        old_name,
-        &mut status);
-    if status == false{
+        old_name);
+    if file_extension.len() == 0{
         return old_name.to_owned() + "Protected";
     }
     else{
@@ -54,19 +120,9 @@ impl encryptor{
     }
    
     }
-//future use
- fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
-     //if original encrypted try deleting the original
-     if encrypt_result.is_ok(){
-         let delete_result = fs::remove_file(path);
-         if delete_result.is_ok(){
-            println!("File at {} has been successfully encrypted and deleted",path);
-         }
-     }
 
- }
+ 
  pub fn encrypt(key:&str , output_pathing : &str , input_pathing:&str)-> Result<() , ef::EncryptError>{   
-
     let mut encrypt_config = ef::Config::new();
     encrypt_config.input_stream(ef::InputStream::File(input_pathing.to_owned()))
     .output_stream(ef::OutputStream::File(output_pathing.to_owned()))
