@@ -10,7 +10,7 @@ use std::env;
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 pub struct Logger {
-    row_number :  i32
+    pub row_number :  i32
 
 }
 

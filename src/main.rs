@@ -1,4 +1,4 @@
-
+#![allow(warnings, unused)]
 extern crate encryptfile;
 extern crate json;
 mod sockethandler;
@@ -12,6 +12,7 @@ mod testing;
 use std::env;
 extern crate uuid;
 
+
 fn main(){
-    testing::tester::test_decrypted_name();
+    testing::tester::test_logger_increment();
 }

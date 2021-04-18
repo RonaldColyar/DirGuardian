@@ -18,12 +18,12 @@ fn find_extension(
         if letter == dot {
             return;
         }
-
     }
      // if no dot has been found
      *file_extension = vec![];
 
  }
+
 fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
     //if original encrypted try deleting the original
     if encrypt_result.is_ok(){
@@ -33,7 +33,6 @@ fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , pa
         }
     }
 }
-
 
 fn gather_correct_decrypt_name_without_ext(
     old_name:&str ,
