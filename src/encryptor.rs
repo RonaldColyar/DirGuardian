@@ -26,10 +26,7 @@ fn find_extension(
 
  }
 
-fn get_all_filenames(){
 
-
-}
 fn encrypt_or_add_dirname(path:std::path::PathBuf 
         ,dir_names :&mut Vec<String>,dir_path :&str,curr_index:usize) {
     if path.is_dir() { //found a sub directory
@@ -69,19 +66,18 @@ pub fn encrypt_dir_and_sub_dirs(dir_path:&str){
     let mut current_index :usize= 0;
 
     while not_found_status == false{ //while there are sub directories remaining
-        let dir_name_size = directory_names.len();
         let entries_result = fs::read_dir(directory_names[current_index].to_owned());
         if entries_result.is_ok(){
             for entry in entries_result.unwrap(){
                 encryptor::encrypt_or_add_dirname(entry.unwrap().path() ,
                     &mut directory_names,dir_path,current_index);
             }
-            if dir_name_size == directory_names.len(){// there isn't any more sub directories
-                not_found_status = true;
-            }
         }
         else{
             break; //no initial directory found
+        }
+        if current_index == directory_names.len()-1 {// there isn't any more sub directories
+        not_found_status = true;
         }
         current_index = current_index +1;}
 }
