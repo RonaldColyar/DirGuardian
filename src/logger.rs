@@ -21,12 +21,34 @@ impl  Logger {
         }  
     }
 
-    
+    pub fn invalid_key_size(&mut self){
+        self.display_row_number();
+        println!("Key file not valid , the length of the key in the file is 0");
+        self.display_bottom_sep();
+    }
+    pub fn log_encryption_key(&mut self, key:&str){
+        self.display_row_number();
+        let path = 
+            env::current_dir().unwrap().to_str().unwrap().to_owned() + "/src/warningascii.txt";
+        let mut f = File::open( path);
+        self.file_read_check(f);
+        println!("This is your encryption key!!:{}" , key);
+        println!("You will need this key to decrypt your files!");
+        println!("Do not close this directory unless you have this key!!");
+        self.display_bottom_sep();
+        
+    }
+    pub fn invalid_key_path(&mut self ){
+        self.display_row_number();
+        println!("Key file not found");
+        self.display_bottom_sep();
+    }
     pub fn unknown_command(&mut self){
         self.display_row_number();
         println!("Unknown Command!! ");
         self.display_bottom_sep();
     }
+    
 
     fn display_row_number(&mut self){
         println!("------------Row Number:{}------------",
@@ -66,11 +88,13 @@ impl  Logger {
     fn file_read_check(
             &mut self ,
             f : std::result::Result<File , 
-            std::io::Error>, data: &mut String){
+            std::io::Error>){
    
            if f.is_ok() == true{
-               f.unwrap().read_to_string( data);
-               println!("{}" ,data);
+                let mut data = String::new();
+               f.unwrap().read_to_string( &mut data);
+               println!("{}",data);
+             
                
            }
            else{
@@ -92,7 +116,7 @@ impl  Logger {
    
     
     pub fn first_start_message(&mut self){
-        let mut data = String::new();
+        
         let path = 
             env::current_dir()
             .unwrap()
@@ -104,7 +128,7 @@ impl  Logger {
         let mut f = File::open( path);
        
         self.welcome();
-        self.file_read_check(f,&mut data);
+        self.file_read_check(f);
     
        
 

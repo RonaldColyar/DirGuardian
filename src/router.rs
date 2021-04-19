@@ -4,6 +4,7 @@ use std::io::Read;
 use crate::setup::SetupObj;
 use crate::logger::Logger;
 use crate::sockethandler::SockHandler;
+use crate::encryptor;
 use std::io::Write;
 
 
@@ -38,19 +39,19 @@ impl Router{
 
             }
     }
-    fn check_file(&mut self, status : &mut bool , command :&Vec<&str>){
-                    if *status != false{
-                        let path = command[1];
-                        let result = || ->std::result::Result<() , std::io::Error>{
-                            let mut f = File::open(path)?;
-                            Ok(())
+    fn check_file(&mut self ,path :&str) -> std::result::Result<File , std::io::Error>{
+        let try_file = || ->std::result::Result<File , std::io::Error>{
+        let mut f = File::open(path)?;
+            Ok(f)
                         };
-                        if let Err(_err) =result(){
-                            self.logger.file_not_found(command[1]);
-                            *status = false;
-                        };   
-                    }    
-                }
+        let result = try_file();
+        if let Err(_err) =&result{
+            self.logger.file_not_found(path);
+                            
+            };   
+        return result;
+                     
+        }
 
 
 
@@ -60,10 +61,14 @@ impl Router{
         //only check file path if leading command is encrypt
         if status == true {
             if command[0] == "encrypt"{
-                self.check_file(&mut status , command);
+               let result = self.check_file( command[1]);
+               if result.is_err(){
+                 status = false;
+               }
             }
         }
         return status;
+       
     }
     
     fn new_input(&mut self,prompt : &str) -> String{
@@ -71,6 +76,7 @@ impl Router{
         std::io::stdout().flush().unwrap();
         let mut input = String::new();
         stdin().read_line(&mut input);
+        input.trim_right_matches("\r\n");
         return input;
     }
 
@@ -101,15 +107,50 @@ impl Router{
 
     }
 
+    fn check_key_len_and_continue( &mut self, path :&str , key_holder:String){
+             //make sure its not an empty string
+             if key_holder.len() > 0 {
+                //number of paths 
+                encryptor::encryptor::encrypt_dir_and_sub_dirs(path,key_holder.as_str());
+            }
+            else{
+               self.logger.invalid_key_size();
+            }
+    }
+    fn validate_key_and_encrypt( &mut self ,path:&str){
+        let result: std::result::Result<File , std::io::Error> = self.check_file(path);
+        if result.is_ok(){
+            let mut key_holder = String::new();
+            result.unwrap().read_to_string( &mut key_holder);
+            self.check_key_len_and_continue(path,key_holder);
+        }
+        else{
+            self.logger.invalid_key_path();
+        }
+
+       
+    }
+    //WIP
     fn encrypt_offline(&mut self ,data:Vec<&str>){
+        let key_response = self.new_input("Would to provide your own key?[Y/N]>");
+        let key_path = self.new_input("Path to key file >");
+        if key_response == "Y"{
+            self.validate_key_and_encrypt(key_path.as_str());
+        }
+        else{
+            let key = encryptor::encryptor::minimal_encryption_key();
+            self.logger.log_encryption_key(key.as_str());
+            encryptor::encryptor::encrypt_dir_and_sub_dirs(data[1],key.as_str());
+        }
+
 
 
     }
 
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
-
+        println!("{}", command_vec[2] == "off");
         if command_vec[0] == "encrypt" && command_vec[2] == "off"{
-            //route to offline encryption
+            self.encrypt_offline(command_vec);
         }
         else if command_vec[0] == "encrypt" && command_vec[2] == "on"{
             //route to online encryption

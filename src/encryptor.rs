@@ -54,7 +54,7 @@ pub fn decrypt_dir_and_sub_dirs(dir_path:&str ,key : &str){
 
     while not_found_status == false{ //while there are sub directories remaining
         let entries_result = fs::read_dir(directory_names[current_index].to_owned());
-        if entries_result.is_ok(){
+        if entries_result.is_ok(){ //current directory is valid
             for entry in entries_result.unwrap(){
                 encryptor::decrypt_or_add_dirname(entry.unwrap().path() ,
                     &mut directory_names,dir_path,current_index,key);
@@ -76,14 +76,14 @@ pub fn encrypt_dir_and_sub_dirs(dir_path:&str ,key : &str){
 
     while not_found_status == false{ //while there are sub directories remaining
         let entries_result = fs::read_dir(directory_names[current_index].to_owned());
-        if entries_result.is_ok(){
-            for entry in entries_result.unwrap(){
+        if entries_result.is_ok(){//current directory is valid
+            for entry in entries_result.unwrap(){ 
                 encryptor::encrypt_or_add_dirname(entry.unwrap().path() ,
                     &mut directory_names,dir_path,current_index,key);
             }
         }
         else{
-            break; //no initial directory found
+            break; //no  directory found
         }
         if current_index == directory_names.len()-1 {// there isn't any more sub directories
         not_found_status = true;
@@ -99,7 +99,7 @@ fn encrypt_or_add_dirname(path:std::path::PathBuf
         if path.is_dir() { //found a sub directory
             println!("{}", path.to_str().unwrap().to_owned() +"/");
             let name = String::from(path.to_str().unwrap())+ "/";
-            dir_names.push(name);
+            dir_names.push(name); // add to list of sub dirs to traverse next
         }
         else{ // found a file
             encryptor::check_path_and_encrypt(dir_names[curr_index].as_str(),path,key);
@@ -113,7 +113,7 @@ fn decrypt_or_add_dirname(path:std::path::PathBuf
         if path.is_dir() { //found a sub directory
             println!("{}", path.to_str().unwrap().to_owned() +"/");
             let name = String::from(path.to_str().unwrap())+ "/";
-            dir_names.push(name);
+            dir_names.push(name); // add to list of sub dirs to traverse next
         }
         else{ // found a file
             encryptor::check_path_and_decrypt(dir_names[curr_index].as_str(),path,key);

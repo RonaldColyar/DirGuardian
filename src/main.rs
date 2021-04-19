@@ -2,6 +2,9 @@
 extern crate encryptfile;
 extern crate json;
 mod sockethandler;
+use std::io::stdin;
+use std::io::Write;
+
 mod logger;
 mod interface;
 mod router;
@@ -21,7 +24,13 @@ fn main(){
     .to_str()
     .unwrap()
     .to_owned() +"/src/"+"test/";
-    println!("{}" , key);
+    let mut router = router::Router::new(1,2);
+    println!("{}" , path_en1);
+    std::io::stdout().flush().unwrap();
+    let mut input = String::new();
+    stdin().read_line(&mut input);
+    input = input + " ";
+    router.route_command(input.as_str());
     
-    encryptor::encryptor::decrypt_dir_and_sub_dirs(path_en1.as_str(),key);
+    //encryptor::encryptor::decrypt_dir_and_sub_dirs(path_en1.as_str(),key);
 }
