@@ -21,5 +21,7 @@ fn main(){
     .to_str()
     .unwrap()
     .to_owned() +"/src/"+"test/";
-    encryptor::encryptor::decrypt_dir_and_sub_dirs(path_en1.as_str());
+    println!("{}" , key);
+    
+    encryptor::encryptor::decrypt_dir_and_sub_dirs(path_en1.as_str(),key);
 }
