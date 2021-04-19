@@ -27,30 +27,8 @@ fn find_extension(
  }
 
 
-fn encrypt_or_add_dirname(path:std::path::PathBuf 
-        ,dir_names :&mut Vec<String>,dir_path :&str,curr_index:usize) {
-    if path.is_dir() { //found a sub directory
-        println!("{}", path.to_str().unwrap().to_owned() +"/");
-        let name = String::from(path.to_str().unwrap())+ "/";
-        dir_names.push(name);
-    }
-    else{ // found a file
-       encryptor::check_path_and_encrypt(dir_names[curr_index].as_str(),path);
-        }
-    }
 
-fn check_path_and_encrypt(output_location :&str , path:std::path::PathBuf){
-    let name_result = path.file_name();
-    if name_result.is_some(){
-        println!(" Encrypting->{}",name_result.unwrap().to_str().unwrap());
-        let file_name = name_result.unwrap();
-        let encrypted_file_name = 
-            encryptor::plain_encrypted_file_name(file_name.to_str().unwrap());
-        let output_file_path = 
-            String::from(output_location.to_owned()) + encrypted_file_name.as_str();
-        encryptor::encrypt("ok" , output_file_path.as_str(), path.to_str().unwrap());
-    }
-}
+
 pub fn encrypt_dir(dir_path:&str){
     let entries_result = fs::read_dir(dir_path);
     if entries_result.is_ok(){
@@ -60,6 +38,31 @@ pub fn encrypt_dir(dir_path:&str){
         }
     }
 }
+// ----------BEGIN  REPEATED----------
+
+/* REPEATED LOGIC FOR  READABILITY */
+pub fn decrypt_dir_and_sub_dirs(dir_path:&str){
+    let mut  not_found_status = false; 
+    let mut directory_names = vec![String::from(dir_path)];
+    let mut current_index :usize= 0;
+
+    while not_found_status == false{ //while there are sub directories remaining
+        let entries_result = fs::read_dir(directory_names[current_index].to_owned());
+        if entries_result.is_ok(){
+            for entry in entries_result.unwrap(){
+                encryptor::decrypt_or_add_dirname(entry.unwrap().path() ,
+                    &mut directory_names,dir_path,current_index);
+            }
+        }
+        else{
+            break; //no initial directory found
+        }
+        if current_index == directory_names.len()-1 {// there isn't any more sub directories
+            not_found_status = true;
+        }
+        current_index = current_index +1;}
+}
+/* REPEATED LOGIC FOR  READABILITY */
 pub fn encrypt_dir_and_sub_dirs(dir_path:&str){
     let mut  not_found_status = false; 
     let mut directory_names = vec![String::from(dir_path)];
@@ -82,6 +85,58 @@ pub fn encrypt_dir_and_sub_dirs(dir_path:&str){
         current_index = current_index +1;}
 }
 
+/* REPEATED LOGIC FOR  READABILITY */
+fn encrypt_or_add_dirname(path:std::path::PathBuf 
+    ,dir_names :&mut Vec<String>,dir_path :&str,curr_index:usize) {
+        if path.is_dir() { //found a sub directory
+            println!("{}", path.to_str().unwrap().to_owned() +"/");
+            let name = String::from(path.to_str().unwrap())+ "/";
+            dir_names.push(name);
+        }
+        else{ // found a file
+            encryptor::check_path_and_encrypt(dir_names[curr_index].as_str(),path);
+            }
+}
+/* REPEATED LOGIC FOR  READABILITY */
+fn decrypt_or_add_dirname(path:std::path::PathBuf 
+    ,dir_names :&mut Vec<String>,dir_path :&str,curr_index:usize) {
+        if path.is_dir() { //found a sub directory
+            println!("{}", path.to_str().unwrap().to_owned() +"/");
+            let name = String::from(path.to_str().unwrap())+ "/";
+            dir_names.push(name);
+        }
+        else{ // found a file
+            encryptor::check_path_and_decrypt(dir_names[curr_index].as_str(),path);
+        }
+}
+/* REPEATED LOGIC FOR  READABILITY */
+fn check_path_and_encrypt(output_location :&str , path:std::path::PathBuf){
+    let name_result = path.file_name();
+    if name_result.is_some(){
+        println!(" Encrypting->{}",name_result.unwrap().to_str().unwrap());
+        let file_name = name_result.unwrap();
+        let encrypted_file_name = 
+            encryptor::plain_encrypted_file_name(file_name.to_str().unwrap());
+        let output_file_path = 
+            String::from(output_location.to_owned()) + encrypted_file_name.as_str();
+        encryptor::encrypt("ok" , output_file_path.as_str(), path.to_str().unwrap());
+    }
+}
+
+/* REPEATED LOGIC FOR  READABILITY */
+fn check_path_and_decrypt(output_location :&str , path:std::path::PathBuf){
+    let name_result = path.file_name();
+    if name_result.is_some(){
+        println!(" Decrypting->{}",name_result.unwrap().to_str().unwrap());
+        let file_name = name_result.unwrap();
+        let decrypted_file_name = 
+            encryptor::plain_decrypted_file_name(file_name.to_str().unwrap());
+        let output_file_path = 
+            String::from(output_location.to_owned()) + decrypted_file_name.as_str();
+        encryptor::decrypt("ok" , output_file_path.as_str(), path.to_str().unwrap());
+    }
+}
+// ----------END REPEATED----------
 
 
 fn remove_file_if_successful(encrypt_result:&Result<() , ef::EncryptError>  , path:&str){
@@ -98,7 +153,7 @@ fn gather_correct_decrypt_name_without_ext(
     old_name:&str ,
     name_holder:&mut String){
            
-    if old_name.len() > 9{
+    if old_name.len() > 9{//without suffix
         let name_without_ext_and_suffix :String = 
             old_name.chars().take(old_name.len()-9).collect();
         *name_holder =  name_without_ext_and_suffix;
