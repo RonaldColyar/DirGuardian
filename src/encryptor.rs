@@ -180,6 +180,7 @@ fn gather_correct_decrypt_name_without_ext(
         *name_holder =old_name.to_string();
     }
 }
+
 fn gather_correct_decrypt_name_with_ext(
         old_name:&str ,
         mut file_ext:&mut Vec<char>,

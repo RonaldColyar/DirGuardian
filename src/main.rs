@@ -4,7 +4,7 @@ extern crate json;
 mod sockethandler;
 use std::io::stdin;
 use std::io::Write;
-
+mod asciiarthandler;
 mod logger;
 mod interface;
 mod router;
@@ -29,8 +29,7 @@ fn main(){
     std::io::stdout().flush().unwrap();
     let mut input = String::new();
     stdin().read_line(&mut input);
-    input = input + " ";
-    router.route_command(input.as_str());
+    router.route_command(input.trim());
     
     //encryptor::encryptor::decrypt_dir_and_sub_dirs(path_en1.as_str(),key);
 }

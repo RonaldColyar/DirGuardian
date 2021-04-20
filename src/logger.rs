@@ -4,7 +4,7 @@ use ansi_term::Colour;
 use std::fs::File;
 use std::io::Read;
 use std::env;
-
+use crate::asciiarthandler::Handler;
 
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -29,7 +29,7 @@ impl  Logger {
     pub fn log_encryption_key(&mut self, key:&str){
         self.display_row_number();
         let path = 
-            env::current_dir().unwrap().to_str().unwrap().to_owned() + "/src/warningascii.txt";
+            env::current_dir().unwrap().to_str().unwrap().to_owned() + "/src/AsciiArt/warningascii.txt";
         let mut f = File::open( path);
         self.file_read_check(f);
         println!("This is your encryption key!!:{}" , key);
@@ -37,6 +37,21 @@ impl  Logger {
         println!("Do not close this directory unless you have this key!!");
         self.display_bottom_sep();
         
+    }
+    pub fn complete_cryption(&mut self,message:&str){
+        self.display_row_number();
+        let mut  handler = Handler::new();
+        let path = 
+            env::current_dir()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned() + "/src/AsciiArt/"+ handler.animal_of_choice().as_str()+"ascii.txt";
+        let mut f = File::open( path);
+        self.file_read_check(f);
+        println!("   ");
+        println!("{}",message);
+        self.display_bottom_sep();
     }
     pub fn invalid_key_path(&mut self ){
         self.display_row_number();
@@ -51,6 +66,7 @@ impl  Logger {
     
 
     fn display_row_number(&mut self){
+        println!("           ");
         println!("------------Row Number:{}------------",
             self.row_number    
             );
@@ -122,7 +138,7 @@ impl  Logger {
             .unwrap()
             .to_str()
             .unwrap()
-            .to_owned() + "/src/ascii.txt";
+            .to_owned() + "/src/AsciiArt/ascii.txt";
             
         println!("{}" , path);
         let mut f = File::open( path);

@@ -36,6 +36,7 @@ impl Router{
     fn check_param_count(&mut self ,status : &mut bool , command :&Vec<&str>){
             if   command.len() < 2   {
                 *status = false;
+                println!("Invalid Command!");
 
             }
     }
@@ -112,6 +113,7 @@ impl Router{
              if key_holder.len() > 0 {
                 //number of paths 
                 encryptor::encryptor::encrypt_dir_and_sub_dirs(path,key_holder.as_str());
+                self.logger.complete_cryption("Directory Completely Encrypted!!");
             }
             else{
                self.logger.invalid_key_size();
@@ -133,14 +135,16 @@ impl Router{
     //WIP
     fn encrypt_offline(&mut self ,data:Vec<&str>){
         let key_response = self.new_input("Would to provide your own key?[Y/N]>");
-        let key_path = self.new_input("Path to key file >");
+       
         if key_response == "Y"{
+            let key_path = self.new_input("Path to key file >");
             self.validate_key_and_encrypt(key_path.as_str());
         }
         else{
             let key = encryptor::encryptor::minimal_encryption_key();
             self.logger.log_encryption_key(key.as_str());
             encryptor::encryptor::encrypt_dir_and_sub_dirs(data[1],key.as_str());
+            self.logger.complete_cryption("Directory Completely Encrypted!!");
         }
 
 
@@ -148,7 +152,6 @@ impl Router{
     }
 
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
-        println!("{}", command_vec[2] == "off");
         if command_vec[0] == "encrypt" && command_vec[2] == "off"{
             self.encrypt_offline(command_vec);
         }
@@ -175,9 +178,6 @@ impl Router{
        let  command_vec =  input.split(" ").collect();
        if self.command_is_valid(&command_vec) == true {
            self.route_command_tier_one(command_vec);
-       }
-       else{
-           self.logger.unknown_command();
        }
 
     }
