@@ -1,8 +1,8 @@
 
 use queues::*;
-use crate::encryptfile as ef;
+use encryptfile as ef;
 pub struct encryptor;
-use crate::uuid;
+use uuid;
 use std::fs;
 
 use std::env;

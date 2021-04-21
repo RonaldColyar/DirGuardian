@@ -72,6 +72,24 @@ impl  Logger {
             );
         self.row_number +=1 ;
     }
+
+    pub fn commands(&mut self){
+        self.display_row_number();
+        println!("Important Note!!: Commands Are Space Sensitive.");
+        println!(" ");
+        println!("[1](Encrypt Directory local functionality only)");
+        println!("--Command formatt : Encrypt [PATH] off]");
+        println!("[2](Encrypt Directory cloud with functionality)");
+        println!("--Command formatt : Encrypt [PATH] on");
+        println!("[3](Configuration of settings like colors and server addresses)");
+        println!("--Command formatt : config settings [parameter]");
+        println!("[4](Configuration parameters)");
+        println!("--Command  : config params");
+        println!("[5](Configure Deadman's Switch)");
+        println!("--Command: config dms");
+        self.display_bottom_sep();     
+
+    }
     fn display_bottom_sep(&mut self){
         println!("-----------------------------------");
         println!("   ");
@@ -97,7 +115,7 @@ impl  Logger {
             Colour::Green.paint("Welcome To DirGuardian!"),
             Colour::Red.paint("Version ".to_owned() + VERSION));
         println!("  ");
-        println!("      For command listings run --Coms");
+        println!("      For command listings run help()");
        
     }
      
