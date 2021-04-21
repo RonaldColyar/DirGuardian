@@ -26,6 +26,14 @@ fn main(){
     std::io::stdout().flush();
     let mut input = String::new();
     stdin().read_line(&mut input);
+    let path = 
+            env::current_dir()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned() + "/src/test/";
+    println!("{}" , path);
+            
     if input.trim() == "quit()"{
         break
     }
