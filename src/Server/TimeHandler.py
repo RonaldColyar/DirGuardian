@@ -13,13 +13,13 @@ class TimeTracker:
             elasped_time = int(current_time -clock.start_time)
             if elasped_time >20 :
                 client.close()
-    def stop_timer(self ,num):
+                self.stop_timer()
+    def stop_timer(self ):
             self.running = False
-            
+
     def start_timer(self , client,num):
-        thread = threading.Thread(target = self.monitor_timeout , args = (client,num))
+        thread = threading.Thread(target = self.monitor_timeout , args = (client,))
         thread.start()
 
-    def monitor_timeout(self, client , num):
-            self.connection_one_clock == TimeData()
+    def monitor_timeout(self, client ):
             self.check_elasped_time(client)
