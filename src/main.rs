@@ -17,32 +17,9 @@ extern crate uuid;
 
 
 fn main(){
- let running  = true;
- let mut router = router::Router::new(1,2);
- router.logger.first_start_message();
+    let mut interface = interface::Interface::new();
+    interface.clear_terminal();
+    interface.router.logger.first_start_message();
+    interface.start();
 
- while running == true{
-    print!("->");
-    std::io::stdout().flush();
-    let mut input = String::new();
-    stdin().read_line(&mut input);
-    let path = 
-            env::current_dir()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .to_owned() + "/src/test/";
-    println!("{}" , path);
-            
-    if input.trim() == "quit()"{
-        break
-    }
-    else if input.trim() == "help()"{
-        router.logger.commands();
-    }
-    else{
-        router.route_command(input.trim());
-        }
-    }
-    //encryptor::encryptor::decrypt_dir_and_sub_dirs(path_en1.as_str(),key);
 }

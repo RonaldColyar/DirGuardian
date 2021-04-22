@@ -31,15 +31,13 @@ impl Router{
         }
         
     }
-
-    //fn route_color_preference(data:String){}
+    // used for checking command parameters
     fn check_param_count(&mut self ,status : &mut bool , command :&Vec<&str>){
             if   command.len() < 3   {
                 *status = false;
-                println!("Invalid Command!");
-
             }
     }
+
     fn check_file(&mut self ,path :&str) -> std::result::Result<File , std::io::Error>{
         let try_file = || ->std::result::Result<File , std::io::Error>{
         let mut f = File::open(path)?;
@@ -110,22 +108,34 @@ impl Router{
 
     fn check_key_len_and_continue( &mut self, path :&str , key_holder:String ,fun : fn(&str , &str)){
              //make sure its not an empty string
-             if key_holder.len() > 0 {
-                //number of paths 
+            if key_holder.len() > 0 
+             {
                 fun(path,key_holder.as_str());
                 self.logger.complete_cryption("Directory Completely crypted!!");
-            }
-            else{
+             }
+            else
+             {
                self.logger.invalid_key_size();
-            }
+             }
     }
+
+    /* 
+    1.This method takes in a path to a directory
+    that is going to be encrypted or decrypted[path]
+
+    2. Takes in a function  , which is either encryption or decryption[fun]
+
+    3.Takes in an optional key which is when the user manually
+    types a key into the command line.[optional_key]
+    */
     fn validate_key_and_crypt( &mut self ,path:&str , fun : fn(&str , &str),optional_key:&str){
-        //if there is a key passed in
-        //used for polymorphism of decryption_offline
-        if optional_key.len()>0{
+        //if there is a option key passed in use it as the key.
+        if optional_key.len()>0
+        {
             self.check_key_len_and_continue(path,optional_key.to_string(), fun);
         }
-        else{
+        else
+        {
             let result: std::result::Result<File , std::io::Error> = self.check_file(path);
             if result.is_ok(){
                 let mut key_holder = String::new();
@@ -135,40 +145,36 @@ impl Router{
             else{
                 self.logger.invalid_key_path();
             }
-    }
+        }
 
        
     }
 
-    fn prompt_for_typed_crypt_key_and_continue(&mut self,fun: fn(&str ,&str),data:Vec<&str>){
+    fn prompt_for_typed_encrypt_key_and_continue(&mut self,data:Vec<&str>){
         let type_key_response = self.new_input("Would to type your own key?[Y/N]>");
         let mut key = String::new();
         if type_key_response == "Y"{
             key = self.new_input("Custom Key>")
         }
         else{
-            key = encryptor::encryptor::minimal_encryption_key();
-        
+            key = encryptor::encryptor::minimal_encryption_key()
         }
         self.logger.log_encryption_key(key.as_str());
-        fun(data[1],key.as_str());
+        encryptor::encryptor::encrypt_dir_and_sub_dirs(data[1],key.as_str());
         self.logger.complete_cryption("Directory Completely Encrypted!!");
      
     }
-    //WIP
+    
     fn encrypt_offline(&mut self ,data:Vec<&str>){
         let key_response = self.new_input("Would to provide your own key file?[Y/N]>");
        
         if key_response == "Y"{
             let key_path = self.new_input("Path to key file >");
-            self.validate_key_and_crypt(key_path.as_str() , 
-                encryptor::encryptor::encrypt_dir_and_sub_dirs,"");
+            self.validate_key_and_crypt( key_path.as_str(),
+                encryptor::encryptor::encrypt_dir_and_sub_dirs,"" );
         }
         else{
-            self.prompt_for_typed_crypt_key_and_continue(
-                encryptor::encryptor::encrypt_dir_and_sub_dirs,
-                data
-            );
+            self.prompt_for_typed_encrypt_key_and_continue(data);
     
         }
     }
@@ -177,12 +183,12 @@ impl Router{
         let key_response = self.new_input("key file path or manual input?[P/M] >");
         if key_response == "P"{
             let key_path = self.new_input("key file path >");
-            self.validate_key_and_crypt(key_path.as_str() , 
+            self.validate_key_and_crypt(data[1] , 
             encryptor::encryptor::decrypt_dir_and_sub_dirs,"");
         }
         else{
             let key = self.new_input("Key >");
-            self.validate_key_and_crypt(key.as_str() ,
+            self.validate_key_and_crypt(data[1],
             encryptor::encryptor::decrypt_dir_and_sub_dirs,key.as_str());
         }
        
@@ -220,6 +226,9 @@ impl Router{
        let  command_vec =  input.split(" ").collect();
        if self.command_is_valid(&command_vec) == true {
            self.route_command_tier_one(command_vec);
+       }
+       else{
+           self.logger.unknown_command();
        }
 
     }
