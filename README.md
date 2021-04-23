@@ -10,6 +10,7 @@ A System that protects a selected directory with cloud functionality.
 - Dead mans switch
 - Guardian teams
 - Real-time notifications on dir statuses
+- Directory mirroring
 
 
 
