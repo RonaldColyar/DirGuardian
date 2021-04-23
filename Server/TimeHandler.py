@@ -17,7 +17,7 @@ class TimeTracker:
     def stop_timer(self ):
             self.running = False
 
-    def start_timer(self , client,num):
+    def start_timer(self , client):
         thread = threading.Thread(target = self.monitor_timeout , args = (client,))
         thread.start()
 
