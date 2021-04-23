@@ -24,7 +24,7 @@ A System that protects a selected directory with cloud functionality.
 
 # How does this system work?
 
-# (Note: Every request to your server requires the password in step 3 above)
+### (Note: Every request to your server requires the password in step 3 above)
 ### Dummy explanation
 1.You encrypt your directory
 
