@@ -13,7 +13,7 @@ A System that protects a selected directory with cloud functionality.
 
 
 
-# Setup( detailed instructions on how included below in docs):
+# Setup( detailed instructions on how included in docs):
 1. You must gather a Fernet encryption key for your client and server( ONLY FOR SECURE COMMUNICATIONS)
 2. Place this Fernet encryption key in the environment of both the client and server(.txt file)
 3. You must place a personal access password in the environment of the server(for authentication).
