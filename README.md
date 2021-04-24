@@ -46,7 +46,7 @@ A System that protects a selected directory with cloud functionality.
 
 # Is there  only command line access???
 
-There is a matching web and android version to monitor the dir status and control the server's state. 
+There is will be a matching web and android version to monitor the dir status and control the server's state. 
 
 
 # Sample Interface
