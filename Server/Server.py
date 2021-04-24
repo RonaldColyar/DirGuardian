@@ -8,40 +8,45 @@ class Server:
     def __init__(self):
         self.host = '127.0.0.1' #localhost
         self.port = 50222
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.running = True
         self.connected = 0
-        self.server.bind((self.host,self.port))
-        self.server.listen()
 
     def decrypt():
         pass
     def encrypt():
         pass
-    def encryption_key(self):
+    def dir_encryption_key(self):
         with open ("key.txt" , "r") as file:
            key =  file.readlines()
            return key
 
-    #push notification
+    #push notification or email
     def start_critical_sequence(self):
         pass
+    
+    def fake_password():
+        with open("fakepassword.txt" , "r") as file:
+            fake = file.readlines()
+            return fake
+    def password(self):
+        with open("password.txt" , "r") as file:
+            password = file.readlines()
+            return password
 
     def credentials_are_valid(self, message):
-        if message == "TEST":
+        if message == self.password():
             return True
-        elif message == "FAKEPASSWORDTRAP":
+        elif message == self.fake_password():
             self.start_critical_sequence()
             return False
         else:
             return False
             
-    def check_command(self,client,message_dict):
-        command = message_dict["password"]
+    async def check_command(self,websocket,message_dict):
+        command = message_dict["command"]
         if command == "key":
-            #key to decrypt directory
-            encrypted_key = self.encrypt(self.encryption_key())
-            client.send(encrypted_key.encode("ascii"))
+            #encrypts the directory encryption key with the communication encryption key
+            encrypted_key = self.encrypt(self.dir_encryption_key())
+            await websocket.send(encrypted_key)
 
         elif command == "report":
             pass
@@ -55,31 +60,32 @@ class Server:
 
 
 
-    def gather_and_check_declaration(self ,client ,addr):
+    async def gather_and_check_declaration(self ,websocket,path):
         try:
-            handler = TimeTracker().start_timer(client)
-            client.send("WHAT".encode("ascii"))
-            response = client.recv(100).decode("ascii")
-            message_dict = json.loads(elf.decrypt(response))
+            handler = TimeTracker().start_timer(websocket)
+            await websocket.send("WHAT")
+            response  = await websocket.recv()
+
+            message_dict = json.loads(self.decrypt(response))
             result = self.credentials_are_valid(message_dict["password"])
             if result == True:
-                self.check_command(client,message_dict)
+                self.check_command(websocket,message_dict)
             else:
                 print("Someone Tried to connect with wrong credentials")
-                client.close()
-
-                
-
+                websocket.close()
 
         except:
+            websocket.close()
             print("Client timeout!")
 
    
     def start_server(self):
-        while self.running == True :
-            client , addr = self.server.accept()
-            self.connected += 1 
-            thread = threading.Thread(target = self.gather_and_check_declaration, args=(client,addr))
-            thread.start()
+           start_server = websockets.serve(self.gather_and_check_declaration, self.host, self.port)
+           asyncio.get_event_loop().run_until_complete(start_server)
+           asyncio.get_event_loop().run_forever()
 
-        
+
+
+if __name__ == "__main__":
+    server = Server()
+    server.start_server()
