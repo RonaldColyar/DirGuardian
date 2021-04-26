@@ -23,11 +23,12 @@ impl SockHandler{
     }
 
     pub fn send_request_and_gather_response(&mut self,data:String) -> String{
-        if sock.is_some(){
+        if self.sock.is_some(){
             let bytes = data.as_bytes();
             let mut  holder = [0 as u8; 1024];
-            sock.write(bytes)?;//request
-            stream.read(&mut holder);//response
+            let mut sock_value = self.sock.as_ref().unwrap();
+            sock_value.write(bytes);//request
+            sock_value.read(&mut holder);//response
 
             let decode_result = from_utf8(&holder);
             if decode_result.is_ok(){
@@ -36,6 +37,9 @@ impl SockHandler{
             else{
                 return String::new();
             }
+        }
+        else{
+            return String::new();
         }
     }
 

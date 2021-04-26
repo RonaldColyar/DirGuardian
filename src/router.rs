@@ -129,8 +129,7 @@ impl Router{
         //if there is a option key passed in use it as the key.
         if key.len()>0
         {
-            self.check_key_len_and_continue(path,key.to_string(), fun);
-            fun(path,key_holder.as_str());
+            fun(path,key);
             self.logger.complete_cryption("Directory Completely decrypted!!");
     
         }
@@ -162,7 +161,7 @@ impl Router{
     
     fn encrypt_offline(&mut self ,data:Vec<&str>){
         self.prompt_for_typed_encrypt_key_and_continue(data);
-        }
+        
     }
     fn decrypt_offline(&mut self, data:Vec<&str>){
  
