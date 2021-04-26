@@ -17,7 +17,7 @@ class Middle:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.Eh = EncryptionHandler()
         
-
+    
 
     async def check_status_and_continue(self,status,websocket,client):
         if status == "success":
