@@ -4,16 +4,14 @@ import asyncio
 import websockets
 import json
 from TimeHandler import TimeTracker
+from Encryption import EncryptionHandler
 class Server:
     def __init__(self):
         self.host = '127.0.0.1' #localhost
         self.port = 50222
         self.connected = 0
-
-    def decrypt():
-        pass
-    def encrypt():
-        pass
+        self.Eh = EncryptionHandler()
+  
     def dir_encryption_key(self):
         with open ("key.txt" , "r") as file:
            key =  file.readlines()
@@ -45,7 +43,7 @@ class Server:
         command = message_dict["command"]
         if command == "key":
             #encrypts the directory encryption key with the communication encryption key
-            encrypted_key = self.encrypt(self.dir_encryption_key())
+            encrypted_key = self.Eh.encrypted(self.dir_encryption_key())
             await websocket.send(encrypted_key)
 
         elif command == "report":
@@ -66,7 +64,7 @@ class Server:
             await websocket.send("WHAT")
             response  = await websocket.recv()
 
-            message_dict = json.loads(self.decrypt(response))
+            message_dict = json.loads(self.Eh.decrypted(response))
             result = self.credentials_are_valid(message_dict["password"])
             if result == True:
                 self.check_command(websocket,message_dict)
