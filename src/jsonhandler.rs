@@ -6,6 +6,7 @@ pub struct JsonHandler{
     file : std::fs::File,
     counter: i8
 }
+//not used right now NOTE......
 
 //hope to have multiple field updates
 impl JsonHandler{

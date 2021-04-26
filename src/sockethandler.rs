@@ -16,12 +16,13 @@ impl SockHandler{
             sock:None
         }
     }
+
     pub fn connect(&mut self) -> Result<TcpStream , std::io::Error>{
-        let result = TcpStream::connect("12.2.2.2.2")?;
+        let result = TcpStream::connect("127.0.0.1:50222")?;
         Ok(result)
     }
-    
-    pub fn send_request_and_gather_response(data:String) -> String{
+
+    pub fn send_request_and_gather_response(&mut self,data:String) -> String{
         if sock.is_some(){
             let bytes = data.as_bytes();
             let mut  holder = [0 as u8; 1024];

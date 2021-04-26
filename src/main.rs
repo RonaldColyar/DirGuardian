@@ -1,6 +1,5 @@
 #![allow(warnings, unused)]
 extern crate encryptfile;
-extern crate json;
 mod sockethandler;
 use std::io::stdin;
 use std::io::Write;

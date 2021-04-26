@@ -5,9 +5,9 @@ use crate::setup::SetupObj;
 use crate::logger::Logger;
 use crate::sockethandler::SockHandler;
 use crate::encryptor;
+use crate::sockethandler;
 use std::io::Write;
-
-
+use json;
 
 
 
@@ -102,7 +102,17 @@ impl Router{
             self.logger.unknown_command();
         }
     }
-    fn encrypt_online(&mut self, data:Vec<&str>){
+    //gather encryption key from server and decrypt/encrypt the directory
+    //data should have password at 4th index  crypt [path] on [password]
+    fn decrypt_online(&mut self, data:Vec<&str>   ){
+        let mut handler = sockethandler::SockHandler::new();
+        let mut data_holder = json::JsonValue::new_object();
+        data_holder["password"] = data[3].into();
+        data_holder["command"] = "gatherkey".into();
+        let stringified_json =  data_holder.dump();
+        let response = handler.send_request_and_gather_response(stringified_json);
+    }
+    fn check_server_response(&mut self , response:String){
 
     }
 
