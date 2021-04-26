@@ -3,7 +3,7 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use std::option::Option;
 use std::result::Result;
-
+use std::str::from_utf8;
 
 pub struct SockHandler{
     sock :Option<TcpStream>
@@ -20,11 +20,22 @@ impl SockHandler{
         let result = TcpStream::connect("12.2.2.2.2")?;
         Ok(result)
     }
-    pub fn init_connection(){
+    
+    pub fn send_request_and_gather_response(data:String) -> String{
+        if sock.is_some(){
+            let bytes = data.as_bytes();
+            let mut  holder = [0 as u8; 1024];
+            sock.write(bytes)?;//request
+            stream.read(&mut holder);//response
 
-    }
-    pub fn send_request(){
-        
+            let decode_result = from_utf8(&holder);
+            if decode_result.is_ok(){
+                return decode_result.unwrap().to_string();
+            }
+            else{
+                return String::new();
+            }
+        }
     }
 
 }
