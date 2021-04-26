@@ -23,6 +23,10 @@ A System that protects a selected directory with cloud functionality.
 6. Start client
 7. Begin running the cli commands(since the server should already be running externally)
 
+# why use the middleware?
+
+1.test of interfacing rust socket connection with python's implementation.
+
 # How does this system work?
 
 ### (Note: Every request to your server requires the password in step 3 above)
