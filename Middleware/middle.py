@@ -3,6 +3,8 @@
 import asyncio
 import websockets
 import json
+from Encryption import EncryptionHandler 
+
 
 class Middle:
 
@@ -13,14 +15,13 @@ class Middle:
         self.host = '127.0.0.1' #localhost
         self.port = 50222
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.Eh = EncryptionHandler()
         
-    def encrypt_request(self):
-        pass
-        
+
 
     async def check_status_and_continue(self,status,websocket,client):
         if status == "success":
-            success_data = self.decrypt_response(await websocket.recv())
+            success_data = self.Eh.decrypted(await websocket.recv())
             client.send(success_data.encode("utf8"))
         else:
             client.send("issue".encode("utf8"))
@@ -30,20 +31,16 @@ class Middle:
          async with websockets.connect('ws://localhost:8765') as websocket:
              server_greeting = await websocket.recv()
 
-             if self.decrypt_response(server_greeting) == "WHAT":
-                 encrypted_request  = self.encrypt_request(data)
+             if self.Eh.decrypted(server_greeting) == "WHAT":
+                 encrypted_request  = self.Eh.encrypted(data)
                  await websocket.send(encrypted_request)#encrypted request in json form
-                 status = self.decrypt_response(await websocket.recv())#accepted password?
+                 status = self.Eh.decrypted(await websocket.recv())#accepted password?
                  self.check_status_and_continue(status,websocket,client)
 
              else:
-                 print(f"Server Responded with :{self.decrypt_response(server_greeting)}")
+                 print(f"Server Responded with :{self.Eh.decrypted(server_greeting)}")
             
-
-            
-    def decrypt_response(self):
-        pass
-    
+    #listens for request from dir guardian client
     def start_listening_for_request(self) :
         self.server.bind((self.host,self.port))
         self.server.listen()
