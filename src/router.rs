@@ -102,18 +102,20 @@ impl Router{
             self.logger.unknown_command();
         }
     }
-    //gather encryption key from server and decrypt/encrypt the directory
-    //data should have password at 4th index  crypt [path] on [password]
-    fn decrypt_online(&mut self, data:Vec<&str>   ){
+    //gather/place encryption key from/on server and decrypt/encrypt the directory
+    fn crypt_online(&mut self, data:Vec<&str> ,command:&str  ,fun : fn(&str,&str) ){
         let mut handler = sockethandler::SockHandler::new();
         let mut data_holder = json::JsonValue::new_object();
         data_holder["password"] = data[3].into();
-        data_holder["command"] = "gatherkey".into();
+        data_holder["command"] = command.into();
         let stringified_json =  data_holder.dump();
         let response = handler.send_request_and_gather_response(stringified_json);
-    }
-    fn check_server_response(&mut self , response:String){
-
+        if response == "issue"{
+            self.logger.failed_request();
+        }
+        else{
+            fun(data[1] , data[3]);
+        }
     }
 
     /* 
@@ -159,10 +161,6 @@ impl Router{
      
     }
     
-    fn encrypt_offline(&mut self ,data:Vec<&str>){
-        self.prompt_for_typed_encrypt_key_and_continue(data);
-        
-    }
     fn decrypt_offline(&mut self, data:Vec<&str>){
  
             let key = self.new_input("Key >");

@@ -38,6 +38,11 @@ impl  Logger {
         self.display_bottom_sep();
         
     }
+    pub fn failed_request(&mut self){
+        self.display_row_number();
+        println!("Issues with request..")
+        self.display_bottom_sep();
+    }
     pub fn complete_cryption(&mut self,message:&str){
         self.display_row_number();
         let mut  handler = Handler::new();
