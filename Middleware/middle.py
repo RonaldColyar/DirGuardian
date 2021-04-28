@@ -65,16 +65,17 @@ class Middle:
         self.server.bind((self.host,self.port))
         self.server.listen()
         client , addr = self.server.accept()
-        data = client.recv(1024).decode("utf8")
+        data_non_encoded = client.recv(1024)
+        data = data_non_encoded.decode("utf8")
 
         try :
             data_dict = json.loads(data)
             password = data_dict["password"]
             command = data_dict["command"]
+            print(len(data))
             print(f"expected password 'test' got : {password}")
             print(f"expected command 'test' got : {command}")
             client.send("Success".encode("utf8"))
-
         except:
             client.send("Error".encode("utf8"))
 
