@@ -2,6 +2,7 @@
 
 import asyncio
 import websockets
+import socket
 import json
 from Encryption import EncryptionHandler 
 
@@ -46,7 +47,10 @@ class Middle:
         self.server.listen()
         client , addr = self.server.accept()
         while self.running == True:
-            size_to_recv = int(client.recv(1024).decode("utf8"))
-            data = client.recv(size_to_recv).decode("utf8")
-            self.send_request(data,client)
+           # size_to_recv = int(client.recv(1024).decode("utf8"))
+            #data = client.recv(size_to_recv).decode("utf8")
+           # self.send_request(data,client)
+           print("TRUE")
                                 
+#Middle().start_listening_for_request()
+EncryptionHandler().make_key()
