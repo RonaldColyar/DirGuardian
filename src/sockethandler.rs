@@ -17,9 +17,16 @@ impl SockHandler{
         }
     }
 
-    pub fn connect(&mut self) -> Result<TcpStream , std::io::Error>{
-        let result = TcpStream::connect("127.0.0.1:50222")?;
-        Ok(result)
+    pub fn connect(&mut self) -> bool{
+        let result = TcpStream::connect("127.0.0.1:50222");
+        if result.is_ok(){
+            self.sock = Some(result.unwrap());
+            return true;
+        }
+        else{
+            return false;
+        }
+        
     }
 
     pub fn send_request_and_gather_response(&mut self,data:String) -> String{

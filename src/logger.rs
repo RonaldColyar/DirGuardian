@@ -40,7 +40,7 @@ impl  Logger {
     }
     pub fn failed_request(&mut self){
         self.display_row_number();
-        println!("Issues with request..")
+        println!("Issues with request..");
         self.display_bottom_sep();
     }
     pub fn complete_cryption(&mut self,message:&str){

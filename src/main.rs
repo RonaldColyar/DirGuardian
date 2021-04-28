@@ -19,6 +19,7 @@ fn main(){
     let mut interface = interface::Interface::new();
     interface.clear_terminal();
     interface.router.logger.first_start_message();
+    testing::tester::test_connection();
     interface.start();
 
 }

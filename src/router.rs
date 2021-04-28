@@ -138,8 +138,6 @@ impl Router{
         else{
             self.logger.invalid_key_size();
         }
-     
-
        
     }
 
@@ -174,7 +172,7 @@ impl Router{
 
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
         if command_vec[0] == "encrypt" && command_vec[2] == "off"{
-            self.encrypt_offline(command_vec);
+            self.prompt_for_typed_encrypt_key_and_continue(command_vec);
         }
         else if command_vec[0] == "decrypt" && command_vec[2] == "off"{
             self.decrypt_offline(command_vec);

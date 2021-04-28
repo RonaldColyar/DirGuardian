@@ -1,6 +1,7 @@
 
 use crate::encryptor;
 use crate::logger;
+use crate::sockethandler;
 pub struct tester{
 
 }
@@ -26,5 +27,11 @@ impl tester{
         assert_eq!(&logger.row_number ,test_val1 );
         logger.unknown_command();
         assert_eq!(&logger.row_number , test_val2);
+    }
+    pub fn test_connection(){
+        let mut handler = sockethandler::SockHandler::new();
+        let result = handler.connect();
+        assert_eq!(result ,true);
+        
     }
 }
