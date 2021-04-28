@@ -17,7 +17,7 @@ class Middle:
         self.port = 50222
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.Eh = EncryptionHandler()
-        
+        self.running = True
     
 
     async def check_status_and_continue(self,status,websocket,client):
@@ -51,6 +51,33 @@ class Middle:
             #data = client.recv(size_to_recv).decode("utf8")
            # self.send_request(data,client)
            print("TRUE")
-                                
-#Middle().start_listening_for_request()
-EncryptionHandler().make_key()
+
+    #small program(don't need unittesting)
+    def test_connection(self):
+        self.server.bind((self.host,self.port))
+        self.server.listen()
+        client , addr = self.server.accept()
+        print("successfully_connected")
+        client.close()
+        self.server.close()
+
+    def test_basic_json_request(self):
+        self.server.bind((self.host,self.port))
+        self.server.listen()
+        client , addr = self.server.accept()
+        data = client.recv(1024).decode("utf8")
+
+        try :
+            data_dict = json.loads(data)
+            password = data_dict["password"]
+            command = data_dict["command"]
+            print(f"expected password 'test' got : {password}")
+            print(f"expected command 'test' got : {command}")
+            client.send("Success".encode("utf8"))
+
+        except:
+            client.send("Error".encode("utf8"))
+
+
+
+Middle().test_basic_json_request()
