@@ -6,7 +6,7 @@ use std::result::Result;
 use std::str::from_utf8;
 
 pub struct SockHandler{
-    sock :Option<TcpStream>
+    pub sock :Option<TcpStream> //pub for tests
 
 }
 

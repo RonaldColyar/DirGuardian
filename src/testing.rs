@@ -2,6 +2,8 @@
 use crate::encryptor;
 use crate::logger;
 use crate::sockethandler;
+use std::mem;
+use std::net::{Shutdown, TcpStream};
 pub struct tester{
 
 }
@@ -28,10 +30,26 @@ impl tester{
         logger.unknown_command();
         assert_eq!(&logger.row_number , test_val2);
     }
+    //the tests below must be configured with middle ware
+    // call the mirroring functions in middle.py'
+
+
     pub fn test_connection(){
         let mut handler = sockethandler::SockHandler::new();
         let result = handler.connect();
         assert_eq!(result ,true);
-        
+        handler.sock.unwrap().shutdown(Shutdown::Both);
+    }
+
+    pub fn test_basic_json_request(){
+        let mut handler = sockethandler::SockHandler::new();
+        handler.connect();
+        let mut data_holder = json::JsonValue::new_object();
+        data_holder["password"] = "test".into();
+        data_holder["command"] = "test".into();
+        let stringified_json =  data_holder.dump();
+        let response = handler.send_request_and_gather_response(stringified_json);
+        println!("Expected Success ,Middleware responded with :{}" , response);
+
     }
 }
