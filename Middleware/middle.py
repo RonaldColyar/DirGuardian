@@ -52,7 +52,7 @@ class Middle:
            # self.send_request(data,client)
            print("TRUE")
 
-    #small program(don't need unittesting)
+    #these tests mirror testing.rs in src(client)
     def test_connection(self):
         self.server.bind((self.host,self.port))
         self.server.listen()
@@ -78,6 +78,14 @@ class Middle:
             client.send("Success".encode("utf8"))
         except:
             client.send("Error".encode("utf8"))
+
+    #these tests mirror the tests in Server.py(server)
+    def test_basic_json_request_to_server():
+        pass
+    def test_connection_to_server():
+        pass
+
+
 
 
 
