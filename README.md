@@ -1,5 +1,7 @@
 # DirGuardian
 
+note: Remote functionality incomplete.Simple to implement , but not needed for my use cases at this point in time.
+
 A System that protects a selected directory with cloud functionality.
 
 - Encrypt a directory and deceive attackers who try to access this directory.
