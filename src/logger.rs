@@ -26,6 +26,7 @@ impl  Logger {
         println!("Key file not valid , the length of the key in the file is 0");
         self.display_bottom_sep();
     }
+    
     pub fn log_encryption_key(&mut self, key:&str){
         self.display_row_number();
         let path = 
@@ -35,14 +36,15 @@ impl  Logger {
         println!("This is your encryption key!!:{}" , key);
         println!("You will need this key to decrypt your files!");
         println!("Do not close this directory unless you have this key!!");
-        self.display_bottom_sep();
-        
+        self.display_bottom_sep();    
     }
+    
     pub fn failed_request(&mut self){
         self.display_row_number();
         println!("Issues with request..");
         self.display_bottom_sep();
     }
+    
     pub fn complete_cryption(&mut self,message:&str){
         self.display_row_number();
         let mut  handler = Handler::new();
@@ -58,17 +60,18 @@ impl  Logger {
         println!("{}",message);
         self.display_bottom_sep();
     }
+    
     pub fn invalid_key_path(&mut self ){
         self.display_row_number();
         println!("Key file not found");
         self.display_bottom_sep();
     }
+    
     pub fn unknown_command(&mut self){
         self.display_row_number();
         println!("Unknown Command!! ");
         self.display_bottom_sep();
     }
-    
 
     fn display_row_number(&mut self){
         println!("           ");
@@ -93,12 +96,13 @@ impl  Logger {
         println!("[5](Configure Deadman's Switch)");
         println!("--Command: config dms");
         self.display_bottom_sep();     
-
     }
+    
     fn display_bottom_sep(&mut self){
         println!("-----------------------------------");
         println!("   ");
     }
+    
     pub fn encrypt_success_message(&mut self,dir:&str){
         self.display_row_number();
         println!("   ");
@@ -106,14 +110,15 @@ impl  Logger {
             Colour::Red.paint(dir) ,
             Colour::Green.paint("Successfully") );
         self.display_bottom_sep();
-        
     }
+    
     pub fn file_not_found(&mut self ,path : &str){
         self.display_row_number();
         println!("Can't find file at {}" ,path);
         println!("please try again!!");
         self.display_bottom_sep();
     }
+    
     fn welcome(&mut self){
         println!("   ");
         println!("{} || {}" , 
@@ -121,7 +126,6 @@ impl  Logger {
             Colour::Red.paint("Version ".to_owned() + VERSION));
         println!("  ");
         println!("      For command listings run help()");
-       
     }
      
     fn file_read_check(
@@ -132,10 +136,9 @@ impl  Logger {
            if f.is_ok() == true{
                 let mut data = String::new();
                f.unwrap().read_to_string( &mut data);
-               println!("{}",data);
-             
-               
+               println!("{}",data);               
            }
+                
            else{
                println!("{} {}" , 
             
@@ -149,10 +152,6 @@ impl  Logger {
             )
            }
        }
-   
-   
-    
-   
     
     pub fn first_start_message(&mut self){
         
@@ -168,12 +167,5 @@ impl  Logger {
        
         self.welcome();
         self.file_read_check(f);
-    
-       
-
-        
     }
-
 }
-
-
