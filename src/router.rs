@@ -9,8 +9,6 @@ use crate::sockethandler;
 use std::io::Write;
 use json;
 
-
-
 use std::io::stdin;
 pub struct Router{
     successful_attempts :i8,
@@ -52,8 +50,6 @@ impl Router{
                      
         }
 
-
-
     fn command_is_valid(&mut self , command : &Vec<&str>)-> bool{
         let mut status = true;
         self.check_param_count(&mut status , &command);
@@ -67,7 +63,6 @@ impl Router{
             }
         }
         return status;
-       
     }
     
     fn new_input(&mut self,prompt : &str) -> String{
@@ -164,11 +159,7 @@ impl Router{
             let key = self.new_input("Key >");
             self.validate_key_and_crypt(data[1],
             encryptor::encryptor::decrypt_dir_and_sub_dirs,key.as_str());
-    
-       
-
     }
-
 
     fn route_command_tier_one(&mut self , command_vec:Vec<&str>){
         if command_vec[0] == "encrypt" && command_vec[2] == "off"{
@@ -204,8 +195,5 @@ impl Router{
        else{
            self.logger.unknown_command();
        }
-
     }
-
-
 }
